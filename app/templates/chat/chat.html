@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-10">
+        <div class="card">
+            .<div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="bi bi-database"></i> E-Commerce Data Chat Agent
+                        <small class="float-end"> Ask Questinos about your busniess data</small>
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div id="chat" class="p-3" style="height: 500px; overflow-y: auto;">
+                        <strong>Welcome to the E-Commerce Data Chat Agent!</strong>
+                        <p>you can ask question about: </p>
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <ul>
+                                    <li><strong>Seles:</strong>"What is total revenue ?"</li>
+                                    <li><strong>Products:</strong>"How many products are in stock ?"</li>
+                                    <li><strong>Customers:</strong>"How many customers are there ?"</li>
+                                  
+                                </ul>
+                            </div>
+                            <div class="col-lg-6">
+                                <ul>
+                                    <li><strong>Inventory:</strong>"Low Stock products ?"</li>
+                                    <li><strong>Orders:</strong>"What is the total number of orders pending ?"</li>
+                                    <li><strong>Analytics:</strong> average rating of products ?"</li> 
+                                </ul>
+                            </div>
+                            <hr>
+
+                        </div>
+
+                    </div>
+                  
+                </div>
+                
+                <div class="card-footer">
+                    <div class="input-group">
+                        <input type="text" class="form-control"  id="message" placeholder="Type your question here...">
+                        <button class="btn btn-primary" id="send" type="button">Send</button>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+      
+
+</div>
+
+
+
+{% endblock content %}

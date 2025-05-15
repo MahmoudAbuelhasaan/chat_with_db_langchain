@@ -5,7 +5,7 @@ from datetime import datetime
 
 from app import db
 
-class User(db.Model):
+class User(UserMixin,db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80),unique=True,nullable=False)
     email = db.Column(db.String(120),unique=True,nullable=False)
@@ -18,8 +18,8 @@ class User(db.Model):
         self.password_hash = bcrypt.generate_password_hash(password).decode('utf-8')
 
 
-    def cheack_password(self, password):
-        return bcrypt().check_password_hash(self.password_hash, password)
+    def check_password(self, password):
+        return bcrypt.check_password_hash(self.password_hash, password)
     
     def has_access_to_table(self, table_name):
         role_permissions = {

@@ -25,6 +25,9 @@ def create_app(config_class=Config):
     bcrypt.init_app(app)
     from app.auth import bp as auth_bp
     app.register_blueprint(auth_bp, url_prefix='/auth')
+    
+    from app.chat import bp as chat_bp
+    app.register_blueprint(chat_bp)
 
 
     return app
