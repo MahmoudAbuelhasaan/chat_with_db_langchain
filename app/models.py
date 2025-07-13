@@ -1,5 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
-from flask_bcrypt import Bcrypt
+from app import bcrypt
 from flask_login import UserMixin
 from datetime import datetime
 
@@ -15,11 +15,11 @@ class User(db.Model):
 
 
     def set_password(self, password):
-        self.password_hash = Bcrypt.generate_password_hash(password).decode('utf-8')
+        self.password_hash = bcrypt.generate_password_hash(password).decode('utf-8')
 
 
     def cheack_password(self, password):
-        return Bcrypt().check_password_hash(self.password_hash, password)
+        return bcrypt().check_password_hash(self.password_hash, password)
     
     def has_access_to_table(self, table_name):
         role_permissions = {
