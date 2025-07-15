@@ -1,7 +1,7 @@
 import os
 from dotenv import load_dotenv
 from langchain_ollama import ChatOllama
-from langchain_community.utils import SQLDatabase
+from langchain_community.utilities.sql_database import SQLDatabase
 from langchain_community.agent_toolkits import create_sql_agent , SQLDatabaseToolkit
 from sqlalchemy import create_engine,inspect
 from app import db
@@ -11,7 +11,7 @@ from config import Config
 load_dotenv()
 
 
-def intialize_sql_agent():
+def intialize_sql_agent(user_role=None):
     # Initialize the SQL database
     engine = create_engine(Config.SQLALCHEMY_DATABASE_URI)
     # create inspector: db schema and tables validation 
@@ -24,12 +24,14 @@ def intialize_sql_agent():
     # create the langchain SQLdatabase 
     sql_db = SQLDatabase.for_uri(
         Config.SQLALCHEMY_DATABASE_URI,
-        engine = engine,
         sample_rows_in_table_info=2, # number of sample rows to fetch for each table
         include_tables=tables,
         )
     # create llm 
-    llm = ChatOllama(model=os.getenv("MODEL"))
+    model_name = os.environ.get("MODEL")
+    if not model_name:
+        raise EnvironmentError("The environment variable 'MODEL' is not set. Please set it to the name of the model to use with ChatOllama.")
+    llm = ChatOllama(model=model_name)
 
     # create the SQL database toolkit
     toolkit = SQLDatabaseToolkit(db=sql_db, llm=llm)

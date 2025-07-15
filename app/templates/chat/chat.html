@@ -12,6 +12,7 @@
                     </h5>
                 </div>
                 <div class="card-body">
+                    
                     <div id="chat" class="p-3" style="height: 500px; overflow-y: auto;">
                         <strong>Welcome to the E-Commerce Data Chat Agent!</strong>
                         <p>you can ask question about: </p>
@@ -32,6 +33,7 @@
                                 </ul>
                             </div>
                             <hr>
+                            
 
                         </div>
 
@@ -53,6 +55,62 @@
       
 
 </div>
+<script src="https://code.jquery.com/jquery-3.7.1.slim.min.js" integrity="sha256-kmHvs0B+OpCW5GVHUNjv9rOmY0IvSIRcf7zGUDTDQM8=" crossorigin="anonymous"></script>
+<script src="https://cdn.socket.io/4.8.1/socket.io.min.js" integrity="sha384-mkQ3/7FUtcGyoppY6bz/PORYoGqOl7/aSUMn2ymDOJcapfS6PHqxhRTMh1RR0Q6+" crossorigin="anonymous"></script>
+<script>
+    $(document).ready(function() {
+        const socketio = io();
+
+        const $chat = $('#chat');
+        const $messageInput = $('#message');
+        const $sendBtn = $('#send');
+
+
+
+        // Listen for incoming messages from the server
+        socketio.on('response', function(data) {
+            // display ai message in chat
+            const aiMessage = $('div').addClass('message-container user-message mb-3');
+            const aiDiv = $('div').addClass('alert alert-success').html(
+                '<i class="bi bi-robot"></i>' + $('div').text(data.response).html()
+            );
+            aiMessage.append(aiDiv);
+            $chat.append(aiMessage);
+
+        });
+
+        function sendMessage() {
+            const message = $messageInput.val().trim();
+            if (!message) return; // Ignore empty messages
+
+            // display user message in chat
+            const userMessage = $('div').addClass('message-container user-message mb-3');
+            const userDiv = $('div').addClass('alert alert-primary').html(
+                '<i class="fa fa-user"></i>' + $('div').text(message).html()
+            );
+            userMessage.append(userDiv);
+            $chat.append(userMessage);
+            $messageInput.val(''); // Clear input field
+
+            emit('message', { message: message });
+           
+
+            
+        }
+        // send message to server
+        $sendBtn.click(sendMessage);
+    
+
+        // press enter to send message
+        messageInput.on('keypress', function(event) {
+            if (event.which === 13) { // Enter key
+                event.preventDefault();
+                sendMessage();
+            }
+        });
+      
+    });
+</script>
 
 
 
