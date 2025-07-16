@@ -21,14 +21,9 @@ class User(UserMixin,db.Model):
     def check_password(self, password):
         return bcrypt.check_password_hash(self.password_hash, password)
     
-    def has_access_to_table(self, table_name):
-        role_permissions = {
-            'customers': ['orders','products','category'],
-            'manager': ['users','orders','products','category'],
-            'admin': ['users','category' 'products', 'orders','chat_sessions','orders_items','customers']
-           
-        }
-        return table_name in role_permissions.get(self.role, [] ) 
+    # def has_access_to_table(self, table_name):
+        
+    #     return table_name in role_permissions.get(self.role, [] ) 
        
 
 class ChatSession(db.Model):

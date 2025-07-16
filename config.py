@@ -11,3 +11,10 @@ db_path = os.path.join(base_dir, os.getenv('DATABASE_NAME'))
 class Config:
     SECRET_KEY = os.getenv('SECRET_KEY')
     SQLALCHEMY_DATABASE_URI =  f'sqlite:///{db_path}'
+
+    ROLE_PERMISSIONS = {
+            'customers': ['order','product','category'],
+            'manager': ['user','order','product','category'],
+            'admin': ['user','category' 'product', 'order','chatSession','orderItem','customer']
+           
+        }

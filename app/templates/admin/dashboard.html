@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Admin Dashboard</h2>
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card text-bg-primary mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Users</h5>
+                    <p class="card-text display-6">{{ user_count }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-bg-success mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Products</h5>
+                    <p class="card-text display-6">{{ product_count }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-bg-warning mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Orders</h5>
+                    <p class="card-text display-6">{{ order_count }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="mb-3">
+        <a href="{{ url_for('admin.manage_users') }}" class="btn btn-outline-primary btn-lg">Manage Users</a>
+    </div>
+</div>
+{% endblock content %}

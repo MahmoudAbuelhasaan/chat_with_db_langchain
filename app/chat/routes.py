@@ -13,11 +13,10 @@ def chat():
 @socketio.on('message')
 @login_required
 def handle_message(data):
+    user_role = current_user.role
     user_message = data['message']
-    agent = intialize_sql_agent()
+    agent = intialize_sql_agent(user_role)
     response = agent.invoke({'input':user_message})
-    # print(f"User: {user_message}")
-    # print(f"Agent: {response}")
     socketio.emit('response', {'response': response['output']})
 
     

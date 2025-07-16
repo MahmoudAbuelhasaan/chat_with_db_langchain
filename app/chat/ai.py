@@ -10,6 +10,10 @@ from config import Config
 # Load environment variables from .env file
 load_dotenv()
 
+def get_user_allowed_tables(user_role):
+    return Config.USER_ALLOWED_TABLES.get(user_role,[])
+
+
 
 def intialize_sql_agent(user_role=None):
     # Initialize the SQL database
@@ -19,7 +23,9 @@ def intialize_sql_agent(user_role=None):
 
     # get the list of tables in the database
     tables = inspector.get_table_names()
-    avliable_tables = tables
+    allowed_tables = get_user_allowed_tables(user_role)
+
+    avliable_tables = [table for table in tables if table in allowed_tables]
 
     # create the langchain SQLdatabase 
     sql_db = SQLDatabase.from_uri(
