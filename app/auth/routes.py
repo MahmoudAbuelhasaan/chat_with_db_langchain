@@ -38,4 +38,7 @@ def register():
 
 @bp.route('/logout')
 def logout():
-    pass
+    logout_user()
+    flash('You have been logged out.', 'info')
+    # Ensure this matches your login endpoint. If your login page is at /login, this is correct.
+    return redirect('/auth/login')
