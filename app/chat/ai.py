@@ -23,15 +23,16 @@ def intialize_sql_agent(user_role=None):
 
     # get the list of tables in the database
     tables = inspector.get_table_names()
+    custom_table_info = {table: f'"{table}"' for table in tables}
     allowed_tables = get_user_allowed_tables(user_role)
 
-    avliable_tables = [table for table in tables if table in allowed_tables]
+    avliable_tables = [f'"{table}"' for table in tables if table in allowed_tables]
 
     # create the langchain SQLdatabase 
     sql_db = SQLDatabase.from_uri(
         Config.SQLALCHEMY_DATABASE_URI,
         sample_rows_in_table_info=2, # number of sample rows to fetch for each table
-        include_tables=tables,
+        include_tables=custom_table_info,
         )
     # create llm 
     model_name = os.environ.get("MODEL")
@@ -44,7 +45,12 @@ def intialize_sql_agent(user_role=None):
 
     # create prompt 
     # create prompt
-    system_prompt = f""" you are a business analyst providing isights about data in database
+    system_prompt = f""" 
+    
+You are an expert SQL agent. You are querying a SQLite database.
+Make sure to wrap table names like `order` in double quotes ("order") to avoid syntax errors.
+
+you are a business analyst providing isights about data in database
 
 CRITICAL INSTRUCTIONS:
 1. NEVER mention SQL , queries , tables or database operators
@@ -64,6 +70,18 @@ RESPONSE TEMPLATES:
 - for values: **Metric**: [Number]
 - for revenu: **Revenue**: [Amount] [time/context]
 - for profit: **Profit**: [Amount]
+- for dates: **Date**: [Date] [context]
+- for trends: **Trend**: [Trend description] [context]
+
+EXAMPLE CONVERSATION STYLE:
+*Question***: how many products do we have?
+*Answer***: We currently have **1,250 products** available in our store! Let me know if you’d like more details.
+
+Always reply in this friendly, helpful, and non-technical way. Let’s make data insights delightful!
+REMEMBER: provide business insights appropriate for {user_role} role.
+If a table or field is missing or unusable, do not attempt a workaround. Simply respond with: **No data found.**
+
+
     """
     # create the SQL agent
     sql_agent = create_sql_agent(
@@ -71,6 +89,12 @@ RESPONSE TEMPLATES:
         toolkit=toolkit,
         system_prompt=system_prompt,
         verbose=True,
+        handle_parsing_errors=True,
+        agent_executor_kwargs={
+        "max_iterations": 20,       # default is 15
+        "max_execution_time": 60,   # seconds
+        "early_stopping_method": "generate"  # optional: let it generate a best-guess answer
+    }
         # agent_type=AgentType.ZERO_SHOT_REACT_DESCRIPTION,
     )
     return sql_agent
