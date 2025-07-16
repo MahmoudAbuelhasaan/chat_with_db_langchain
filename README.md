@@ -24,7 +24,7 @@ A modern web application that allows users to interact with their e-commerce dat
 ### Installation
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/chat_with_db_langchain.git](https://github.com/MahmoudAbuelhasaan/chat_with_db_langchain
+   git clone https://github.com/MahmoudAbuelhasaan/chat_with_db_langchain.git
    cd chat_with_db_langchain
    ```
 2. Create and activate a virtual environment:
