@@ -16,5 +16,8 @@ def handle_message(data):
     user_message = data['message']
     agent = intialize_sql_agent()
     response = agent.invoke({'input':user_message})
-    socketio.emit('response', {'message': response})
+    # print(f"User: {user_message}")
+    # print(f"Agent: {response}")
+    socketio.emit('response', {'response': response['output']})
+
     

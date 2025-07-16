@@ -22,7 +22,7 @@ def intialize_sql_agent(user_role=None):
     avliable_tables = tables
 
     # create the langchain SQLdatabase 
-    sql_db = SQLDatabase.for_uri(
+    sql_db = SQLDatabase.from_uri(
         Config.SQLALCHEMY_DATABASE_URI,
         sample_rows_in_table_info=2, # number of sample rows to fetch for each table
         include_tables=tables,

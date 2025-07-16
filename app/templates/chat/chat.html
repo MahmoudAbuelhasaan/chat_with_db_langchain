@@ -70,9 +70,10 @@
         // Listen for incoming messages from the server
         socketio.on('response', function(data) {
             // display ai message in chat
-            const aiMessage = $('div').addClass('message-container user-message mb-3');
-            const aiDiv = $('div').addClass('alert alert-success').html(
-                '<i class="bi bi-robot"></i>' + $('div').text(data.response).html()
+            // console.log(data);
+            const aiMessage = $('<div>').addClass('message-container user-message mb-3');
+            const aiDiv = $('<div>').addClass('alert alert-success').html(
+                '<i class="bi bi-robot"></i>' + $('<div>').text(data.response).html()
             );
             aiMessage.append(aiDiv);
             $chat.append(aiMessage);
@@ -84,15 +85,15 @@
             if (!message) return; // Ignore empty messages
 
             // display user message in chat
-            const userMessage = $('div').addClass('message-container user-message mb-3');
-            const userDiv = $('div').addClass('alert alert-primary').html(
-                '<i class="fa fa-user"></i>' + $('div').text(message).html()
+            const userMessage = $('<div>').addClass('message-container user-message mb-3');
+            const userDiv = $('<div>').addClass('alert alert-primary').html(
+                '<i class="fa fa-user"></i>' + $('<div>').text(message).html()
             );
             userMessage.append(userDiv);
             $chat.append(userMessage);
             $messageInput.val(''); // Clear input field
 
-            emit('message', { message: message });
+            socketio.emit('message', { message: message });
            
 
             
@@ -102,7 +103,7 @@
     
 
         // press enter to send message
-        messageInput.on('keypress', function(event) {
+        $messageInput.on('keypress', function(event) {
             if (event.which === 13) { // Enter key
                 event.preventDefault();
                 sendMessage();
