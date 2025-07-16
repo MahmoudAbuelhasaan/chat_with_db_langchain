@@ -11,7 +11,7 @@ from config import Config
 load_dotenv()
 
 def get_user_allowed_tables(user_role):
-    return Config.USER_ALLOWED_TABLES.get(user_role,[])
+    return Config.ROLE_PERMISSIONS.get(user_role,[])
 
 
 

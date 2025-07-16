@@ -1,118 +1,231 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="row">
-    <div class="col-lg-10">
-        <div class="card">
-            .<div class="card">
-                <div class="card-header">
-                    <h5 class="mb-0">
-                        <i class="bi bi-database"></i> E-Commerce Data Chat Agent
-                        <small class="float-end"> Ask Questinos about your busniess data</small>
-                    </h5>
-                </div>
-                <div class="card-body">
-                    
-                    <div id="chat" class="p-3" style="height: 500px; overflow-y: auto;">
-                        <strong>Welcome to the E-Commerce Data Chat Agent!</strong>
-                        <p>you can ask question about: </p>
-                        <div class="row">
-                            <div class="col-lg-6">
-                                <ul>
-                                    <li><strong>Seles:</strong>"What is total revenue ?"</li>
-                                    <li><strong>Products:</strong>"How many products are in stock ?"</li>
-                                    <li><strong>Customers:</strong>"How many customers are there ?"</li>
-                                  
-                                </ul>
-                            </div>
-                            <div class="col-lg-6">
-                                <ul>
-                                    <li><strong>Inventory:</strong>"Low Stock products ?"</li>
-                                    <li><strong>Orders:</strong>"What is the total number of orders pending ?"</li>
-                                    <li><strong>Analytics:</strong> average rating of products ?"</li> 
-                                </ul>
-                            </div>
-                            <hr>
-                            
+<style>
+  body {
+    background: linear-gradient(135deg, #e0e7ff 0%, #f8fafc 100%);
+    min-height: 100vh;
+  }
+  .chat-container {
+    max-width: 700px;
+    margin: 40px auto;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+    border-radius: 20px;
+    background: #fff;
+    overflow: hidden;
+    position: relative;
+  }
+  .chat-header {
+    background: linear-gradient(90deg, #6366f1 0%, #60a5fa 100%);
+    color: #fff;
+    padding: 24px 32px 16px 32px;
+    border-bottom-left-radius: 30px 10px;
+    border-bottom-right-radius: 30px 10px;
+    box-shadow: 0 2px 8px rgba(99,102,241,0.08);
+  }
+  .chat-header h5 {
+    font-weight: 700;
+    font-size: 1.5rem;
+    margin-bottom: 0;
+  }
+  .chat-header small {
+    font-size: 1rem;
+    color: #e0e7ff;
+  }
+  #chat {
+    height: 420px;
+    overflow-y: auto;
+    background: #f3f4f6;
+    padding: 24px 24px 12px 24px;
+    border-radius: 0 0 20px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .message-container {
+    display: flex;
+    align-items: flex-end;
+    gap: 10px;
+  }
+  .user-message {
+    flex-direction: row-reverse;
+  }
+  .ai-avatar, .user-avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    background: #6366f1;
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(99,102,241,0.12);
+  }
+  .user-avatar {
+    background: #60a5fa;
+  }
+  .bubble {
+    padding: 12px 18px;
+    border-radius: 18px;
+    max-width: 70%;
+    font-size: 1.08rem;
+    box-shadow: 0 2px 8px rgba(99,102,241,0.07);
+  }
+  .bubble-ai {
+    background: #e0e7ff;
+    color: #3730a3;
+    border-bottom-left-radius: 4px;
+  }
+  .bubble-user {
+    background: #dbeafe;
+    color: #1e293b;
+    border-bottom-right-radius: 4px;
+  }
+  .chat-footer {
+    background: #f3f4f6;
+    padding: 18px 24px;
+    border-top: 1px solid #e5e7eb;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+  .chat-footer input {
+    border-radius: 12px;
+    border: 1px solid #c7d2fe;
+    padding: 10px 16px;
+    font-size: 1.08rem;
+    background: #fff;
+    box-shadow: none;
+  }
+  .chat-footer button {
+    border-radius: 12px;
+    font-weight: 600;
+    padding: 10px 24px;
+    background: linear-gradient(90deg, #6366f1 0%, #60a5fa 100%);
+    color: #fff;
+    border: none;
+    transition: background 0.2s;
+  }
+  .chat-footer button:hover {
+    background: linear-gradient(90deg, #60a5fa 0%, #6366f1 100%);
+  }
+  .chat-suggestions {
+    margin-bottom: 18px;
+    color: #6366f1;
+    font-size: 1.08rem;
+  }
+  .chat-suggestions ul {
+    margin-bottom: 0;
+    padding-left: 18px;
+  }
+  @media (max-width: 800px) {
+    .chat-container { max-width: 98vw; }
+    .chat-header, .chat-footer { padding-left: 12px; padding-right: 12px; }
+    #chat { padding-left: 8px; padding-right: 8px; }
+  }
+</style>
 
-                        </div>
-
-                    </div>
-                  
-                </div>
-                
-                <div class="card-footer">
-                    <div class="input-group">
-                        <input type="text" class="form-control"  id="message" placeholder="Type your question here...">
-                        <button class="btn btn-primary" id="send" type="button">Send</button>
-
-                    </div>
-
-                </div>
-            </div>
-        </div>
+<div class="chat-container">
+  <div class="chat-header">
+    <h5><i class="bi bi-database"></i> E-Commerce Data Chat Agent</h5>
+    <small>Ask questions about your business data</small>
+  </div>
+  <div id="chat">
+    <div class="message-container ai-message mb-2">
+      <div class="ai-avatar"><i class="bi bi-robot"></i></div>
+      <div class="bubble bubble-ai">
+        <strong>Welcome to the E-Commerce Data Chat Agent!</strong><br>
+        <span class="chat-suggestions">
+          You can ask questions about:
+          <ul>
+            <li><strong>Sales:</strong> "What is total revenue?"</li>
+            <li><strong>Products:</strong> "How many products are in stock?"</li>
+            <li><strong>Customers:</strong> "How many customers are there?"</li>
+            <li><strong>Inventory:</strong> "Low stock products?"</li>
+            <li><strong>Orders:</strong> "What is the total number of orders pending?"</li>
+            <li><strong>Analytics:</strong> "Average rating of products?"</li>
+          </ul>
+        </span>
+      </div>
     </div>
-      
-
+  </div>
+  <div class="chat-footer">
+    <input type="text" id="message" placeholder="Type your question here...">
+    <button id="send" type="button"><i class="bi bi-send"></i> Send</button>
+  </div>
 </div>
-<script src="https://code.jquery.com/jquery-3.7.1.slim.min.js" integrity="sha256-kmHvs0B+OpCW5GVHUNjv9rOmY0IvSIRcf7zGUDTDQM8=" crossorigin="anonymous"></script>
-<script src="https://cdn.socket.io/4.8.1/socket.io.min.js" integrity="sha384-mkQ3/7FUtcGyoppY6bz/PORYoGqOl7/aSUMn2ymDOJcapfS6PHqxhRTMh1RR0Q6+" crossorigin="anonymous"></script>
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js" crossorigin="anonymous"></script>
+<script src="https://cdn.socket.io/4.8.1/socket.io.min.js" crossorigin="anonymous"></script>
 <script>
-    $(document).ready(function() {
-        const socketio = io();
-
-        const $chat = $('#chat');
-        const $messageInput = $('#message');
-        const $sendBtn = $('#send');
-
+  $(document).ready(function() {
+    const socketio = io();
+    const $chat = $('#chat');
+    const $messageInput = $('#message');
+    const $sendBtn = $('#send');
 
 
-        // Listen for incoming messages from the server
-        socketio.on('response', function(data) {
-            // display ai message in chat
-            // console.log(data);
-            const aiMessage = $('<div>').addClass('message-container user-message mb-3');
-            const aiDiv = $('<div>').addClass('alert alert-success').html(
-                '<i class="bi bi-robot"></i>' + $('<div>').text(data.response).html()
-            );
-            aiMessage.append(aiDiv);
-            $chat.append(aiMessage);
+    // Add loading spinner style
+    const spinnerStyle = `<style id="chat-spinner-style">
+      @keyframes chat-spin { 100% { transform: rotate(360deg); } }
+      .chat-spinner {
+        display: inline-block;
+        width: 28px;
+        height: 28px;
+        border: 3px solid #a5b4fc;
+        border-top: 3px solid #6366f1;
+        border-radius: 50%;
+        animation: chat-spin 0.8s linear infinite;
+        margin-right: 8px;
+      }
+    </style>`;
+    if (!document.getElementById('chat-spinner-style')) {
+      $('head').append(spinnerStyle);
+    }
 
-        });
-
-        function sendMessage() {
-            const message = $messageInput.val().trim();
-            if (!message) return; // Ignore empty messages
-
-            // display user message in chat
-            const userMessage = $('<div>').addClass('message-container user-message mb-3');
-            const userDiv = $('<div>').addClass('alert alert-primary').html(
-                '<i class="fa fa-user"></i>' + $('<div>').text(message).html()
-            );
-            userMessage.append(userDiv);
-            $chat.append(userMessage);
-            $messageInput.val(''); // Clear input field
-
-            socketio.emit('message', { message: message });
-           
-
-            
-        }
-        // send message to server
-        $sendBtn.click(sendMessage);
-    
-
-        // press enter to send message
-        $messageInput.on('keypress', function(event) {
-            if (event.which === 13) { // Enter key
-                event.preventDefault();
-                sendMessage();
-            }
-        });
-      
+    // Listen for incoming messages from the server
+    socketio.on('response', function(data) {
+      // Remove spinner if present
+      $chat.find('.ai-loading-message').remove();
+      const aiMessage = $('<div>').addClass('message-container ai-message mb-2');
+      const aiAvatar = $('<div>').addClass('ai-avatar').html('<i class="bi bi-robot"></i>');
+      const aiBubble = $('<div>').addClass('bubble bubble-ai').text(data.response);
+      aiMessage.append(aiAvatar).append(aiBubble);
+      $chat.append(aiMessage);
+      $chat.scrollTop($chat[0].scrollHeight);
     });
+
+    function sendMessage() {
+      const message = $messageInput.val().trim();
+      if (!message) return;
+      // display user message in chat
+      const userMessage = $('<div>').addClass('message-container user-message mb-2');
+      const userAvatar = $('<div>').addClass('user-avatar').html('<i class="bi bi-person"></i>');
+      const userBubble = $('<div>').addClass('bubble bubble-user').text(message);
+      userMessage.append(userAvatar).append(userBubble);
+      $chat.append(userMessage);
+      $chat.scrollTop($chat[0].scrollHeight);
+      $messageInput.val('');
+      // Add AI loading spinner
+      const loadingMsg = $('<div>').addClass('message-container ai-message mb-2 ai-loading-message');
+      const loadingAvatar = $('<div>').addClass('ai-avatar').html('<i class="bi bi-robot"></i>');
+      const loadingBubble = $('<div>').addClass('bubble bubble-ai').html('<span class="chat-spinner"></span>Thinking...');
+      loadingMsg.append(loadingAvatar).append(loadingBubble);
+      $chat.append(loadingMsg);
+      $chat.scrollTop($chat[0].scrollHeight);
+      socketio.emit('message', { message: message });
+    }
+
+    $sendBtn.click(sendMessage);
+    $messageInput.on('keypress', function(event) {
+      if (event.which === 13) {
+        event.preventDefault();
+        sendMessage();
+      }
+    });
+  });
 </script>
 
-
-
 {% endblock content %}
+
